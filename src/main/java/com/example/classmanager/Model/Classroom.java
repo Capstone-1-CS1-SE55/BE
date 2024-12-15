@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -19,7 +20,7 @@ public class Classroom {
     private String classroomName;
 
     @Column(name = "created_date")
-    private LocalDate createdDate;
+    private LocalDateTime createdDate;
 
     @Column(nullable = false)
     private Integer quantity = 0;
@@ -30,7 +31,7 @@ public class Classroom {
 
     @PrePersist
     protected void onCreate() {
-        this.createdDate = LocalDate.now();
+        this.createdDate = LocalDateTime.now();
     }
 
 //    @OneToMany(mappedBy = "classroom", cascade = CascadeType.ALL)

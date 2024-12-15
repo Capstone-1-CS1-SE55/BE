@@ -1,17 +1,15 @@
-package com.example.classmanager.dto;
+package com.example.classmanager.dto.projection;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-public interface StudentAnswerProjection {
+public interface QuestionProjection {
     Long getQuestionId();
-
-    Long getStudentId();
 
     Long getAssignmentId();
     String getQuestionText();
-    String getAnswerText();
-    BigDecimal getScore();
+    String getCorrectAnswer();
+    BigDecimal getMaxScore();
     String getTitle();
     LocalDateTime getStartDate();
 }

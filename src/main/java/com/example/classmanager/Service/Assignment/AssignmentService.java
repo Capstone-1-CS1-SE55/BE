@@ -7,7 +7,13 @@ import com.example.classmanager.Model.TeacherAnswer;
 import com.example.classmanager.Repository.IAssignmentRepository;
 import com.example.classmanager.Repository.IQuestionRepository;
 import com.example.classmanager.Repository.ITeacherAnswerRepository;
-import com.example.classmanager.dto.*;
+import com.example.classmanager.dto.projection.AssignmentOfClassProjection;
+import com.example.classmanager.dto.dto.CreateAssignment;
+import com.example.classmanager.dto.dto.QuestionDto;
+import com.example.classmanager.dto.dto.QuestionProjectionDTO;
+import com.example.classmanager.dto.projection.AssignmentOfTeacher;
+import com.example.classmanager.dto.projection.QuestionProjection;
+import com.example.classmanager.dto.projection.TeacherHomeworkProjection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -139,5 +145,11 @@ public class AssignmentService implements IAssignmentService {
     @Override
     public Page<AssignmentOfTeacher> pageFindAssignmentsByTeacherId(String username, String title, Pageable pageable) {
         return iAssignmentRepository.pageFindAssignmentsByTeacherId(username, title, pageable);
+    }
+
+    @Override
+    @PreAuthorize("hasRole('STUDENT')")
+    public Page<AssignmentOfClassProjection> pageGetAssignmentOfClass(Long classroomId, Pageable pageable) {
+        return iAssignmentRepository.pageGetAssignmentOfClass(classroomId, pageable);
     }
 }

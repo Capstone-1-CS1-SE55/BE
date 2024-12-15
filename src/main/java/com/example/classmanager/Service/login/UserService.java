@@ -7,7 +7,7 @@ import com.example.classmanager.Model.login.User;
 import com.example.classmanager.Repository.IStudentRepository;
 import com.example.classmanager.Repository.ITeacherRepository;
 import com.example.classmanager.Repository.login.UserRepository;
-import com.example.classmanager.dto.UserCreateDto;
+import com.example.classmanager.dto.dto.UserCreateDto;
 import com.example.classmanager.enums.Role;
 import com.example.classmanager.exception.AppException;
 import com.example.classmanager.exception.ErrorCode;

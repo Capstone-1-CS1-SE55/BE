@@ -2,7 +2,7 @@ package com.example.classmanager.Service.login;
 
 import com.example.classmanager.Entity.response.UserResponse;
 import com.example.classmanager.Model.login.User;
-import com.example.classmanager.dto.UserCreateDto;
+import com.example.classmanager.dto.dto.UserCreateDto;
 
 import java.util.List;
 

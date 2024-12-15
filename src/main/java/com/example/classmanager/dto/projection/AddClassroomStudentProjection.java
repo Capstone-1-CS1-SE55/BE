@@ -1,4 +1,4 @@
-package com.example.classmanager.dto;
+package com.example.classmanager.dto.projection;
 
 public interface AddClassroomStudentProjection {
     Long getClassroomId();

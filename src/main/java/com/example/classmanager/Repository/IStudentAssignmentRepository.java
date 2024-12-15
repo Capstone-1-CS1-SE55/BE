@@ -1,7 +1,7 @@
 package com.example.classmanager.Repository;
 
 import com.example.classmanager.Model.StudentAssignment;
-import com.example.classmanager.dto.StudentAssignmentProjection;
+import com.example.classmanager.dto.projection.StudentAssignmentProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

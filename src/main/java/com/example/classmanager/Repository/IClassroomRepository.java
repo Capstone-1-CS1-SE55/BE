@@ -1,10 +1,9 @@
 package com.example.classmanager.Repository;
 
 import com.example.classmanager.Model.Classroom;
-import com.example.classmanager.Model.ClassroomStudent;
-import com.example.classmanager.dto.ClassroomProjection;
-import com.example.classmanager.dto.ClassroomStudentProjection;
-import com.example.classmanager.dto.FindAllStudentInClassroomProjection;
+import com.example.classmanager.dto.projection.ClassroomProjection;
+import com.example.classmanager.dto.projection.ClassroomStudentProjection;
+import com.example.classmanager.dto.projection.FindAllStudentInClassroomProjection;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

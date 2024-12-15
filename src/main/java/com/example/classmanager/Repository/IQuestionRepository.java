@@ -1,8 +1,8 @@
 package com.example.classmanager.Repository;
 
 import com.example.classmanager.Model.Question;
-import com.example.classmanager.dto.QuestionProjection;
-import com.example.classmanager.dto.StudentAnswerProjection;
+import com.example.classmanager.dto.projection.QuestionProjection;
+import com.example.classmanager.dto.projection.StudentAnswerProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -24,6 +24,5 @@ public interface IQuestionRepository extends JpaRepository<Question, Long> {
             " sa.question.assignment.assignmentId = :assignmentId and sa.student.studentId = :studentId " +
             "and q.assignment.classroom.teacher.user.username = :username")
     List<StudentAnswerProjection> getAllStudentAnswer(@Param("assignmentId") Long assignmentId, @Param("studentId") Long studentId, @Param("username") String username);
-
 
 }

@@ -1,12 +1,10 @@
-package com.example.classmanager.dto;
+package com.example.classmanager.dto.dto;
 
 import com.example.classmanager.Model.Classroom;
-import com.example.classmanager.Model.Question;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 @Data

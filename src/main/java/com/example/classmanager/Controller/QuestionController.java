@@ -1,15 +1,12 @@
 package com.example.classmanager.Controller;
 
 import com.example.classmanager.Entity.response.ApiResponse;
-import com.example.classmanager.Model.Question;
 import com.example.classmanager.Service.Question.IQuestionService;
-import com.example.classmanager.dto.QuestionUpdateDto;
+import com.example.classmanager.dto.dto.QuestionUpdateDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/question")

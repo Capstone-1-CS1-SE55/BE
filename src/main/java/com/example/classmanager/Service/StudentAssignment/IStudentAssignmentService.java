@@ -1,6 +1,6 @@
 package com.example.classmanager.Service.StudentAssignment;
 
-import com.example.classmanager.dto.StudentAssignmentProjection;
+import com.example.classmanager.dto.projection.StudentAssignmentProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

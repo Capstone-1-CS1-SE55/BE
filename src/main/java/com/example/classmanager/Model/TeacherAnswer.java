@@ -10,6 +10,7 @@ import lombok.*;
 public class TeacherAnswer {
     @Id
     @Column(name = "question_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long questionId;
 
     @Column(name = "correct_answer", nullable = false)

@@ -6,10 +6,12 @@ import com.example.classmanager.Model.ClassroomStudent;
 import com.example.classmanager.Model.Student;
 import com.example.classmanager.Service.Classroom.IClassroomService;
 import com.example.classmanager.Service.Student.IStudentService;
-import com.example.classmanager.Service.login.UserService;
-import com.example.classmanager.dto.ClassroomProjection;
-import com.example.classmanager.dto.ClassroomStudentProjection;
-import com.example.classmanager.dto.FindAllStudentInClassroomProjection;
+import com.example.classmanager.Service.StudentClassroom.IStudentClassroom;
+import com.example.classmanager.dto.projection.StudentProjection;
+import com.example.classmanager.dto.projection.ClassroomProjection;
+import com.example.classmanager.dto.projection.ClassroomStudentProjection;
+import com.example.classmanager.dto.projection.FindAllClassOfStudentProjection;
+import com.example.classmanager.dto.projection.FindAllStudentInClassroomProjection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,6 +34,9 @@ public class ClassroomController {
 
     @Autowired
     private IStudentService iStudentService;
+
+    @Autowired
+    private IStudentClassroom iStudentClassroom;
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<ApiResponse<Classroom>> deleteClassroom(@PathVariable("id") Long id) {
@@ -155,5 +160,28 @@ public class ClassroomController {
         return new ResponseEntity<>(ApiResponse.<String>builder()
                 .message("deleted successfully")
                 .build(), HttpStatus.OK);
+    }
+
+    @GetMapping("/page-get-all-class-of-student")
+    public ResponseEntity<Page<FindAllClassOfStudentProjection>> findAllClassOfStudent(@PageableDefault(page = 0, size = 5) Pageable pageable,
+                                                                                       @RequestParam(required = false, defaultValue = "") String classroomName,
+                                                                                       @RequestParam(required = false, defaultValue = "classroomName") String sort) {
+        Sort sort1 = Sort.by(Sort.Direction.ASC, sort);
+        Pageable pageableWithSort = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort1);
+        Page<FindAllClassOfStudentProjection> list = iStudentClassroom.PageGetAllClassOfStudent(classroomName, pageableWithSort);
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+
+    @GetMapping("/students/{classroomId}")
+    public ResponseEntity<Page<StudentProjection>> getClassroomWithStudents(@PageableDefault(page = 0, size = 5) Pageable pageable,
+                                                                            @PathVariable("classroomId") Long classroomId,
+                                                                            @RequestParam(required = false, defaultValue = "studentName") String sort) {
+        Sort sort1 = Sort.by(Sort.Direction.ASC, sort);
+        Pageable pageableWithSort = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort1);
+        Page<StudentProjection> StudentDto = iStudentClassroom.findStudentByClassroomId(classroomId, pageableWithSort);
+        if (StudentDto == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(StudentDto, HttpStatus.OK);
     }
 }

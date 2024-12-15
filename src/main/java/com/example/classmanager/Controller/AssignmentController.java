@@ -5,7 +5,11 @@ import com.example.classmanager.Model.Assignment;
 import com.example.classmanager.Service.Assignment.IAssignmentService;
 import com.example.classmanager.Service.Question.IQuestionService;
 import com.example.classmanager.Service.StudentAssignment.IStudentAssignmentService;
-import com.example.classmanager.dto.*;
+import com.example.classmanager.dto.dto.AssignmentQDto;
+import com.example.classmanager.dto.projection.AssignmentOfClassProjection;
+import com.example.classmanager.dto.dto.CreateAssignment;
+import com.example.classmanager.dto.dto.QuestionProjectionDTO;
+import com.example.classmanager.dto.projection.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -133,4 +137,24 @@ public class AssignmentController {
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
+    @GetMapping("/assignment-of-class/{classroomId}")
+    public ResponseEntity<Page<AssignmentOfClassProjection>> pageGetAssignmentOfStudent(@PathVariable("classroomId") Long classroomId,
+                                                                                        @RequestParam(required = false, defaultValue = "startDate") String sort,
+                                                                                        @PageableDefault(page = 0, size = 5
+                                                                                        ) Pageable pageable) {
+        Sort sort1 = Sort.by(Sort.Direction.ASC, sort);
+        Pageable pageableWithSort = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort1);
+        Page<AssignmentOfClassProjection> page = iAssignmentService.pageGetAssignmentOfClass(classroomId, pageableWithSort);
+        return new ResponseEntity<>(page, HttpStatus.OK);
+    }
+
+    @GetMapping("/all-question/{assignmentId}")
+    public ResponseEntity<AssignmentQDto> getAllQuestionInAssignment(@PathVariable("assignmentId") Long assignmentId) {
+        try {
+            AssignmentQDto assignmentList = iQuestionService.getAllQuestionInAssignment(assignmentId);
+            return new ResponseEntity<>(assignmentList, HttpStatus.OK);
+        } catch (Exception ignored) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
 }

@@ -1,7 +1,7 @@
 package com.example.classmanager.Service.StudentAssignment;
 
 import com.example.classmanager.Repository.IStudentAssignmentRepository;
-import com.example.classmanager.dto.StudentAssignmentProjection;
+import com.example.classmanager.dto.projection.StudentAssignmentProjection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
