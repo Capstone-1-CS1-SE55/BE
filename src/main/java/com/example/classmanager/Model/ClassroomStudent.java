@@ -15,11 +15,14 @@ public class ClassroomStudent {
     @Column(name = "id")
     private Long id;
 
-    @Column(columnDefinition = "DATE")
+    @Column(name = "enrollment_date", nullable = false, columnDefinition = "DATE DEFAULT CURRENT_TIMESTAMP")
     private LocalDate enrollmentDate;
 
-    @Column(nullable = false)
-    private String status = "Chưa tham gia";
+    @Column(nullable = false, columnDefinition = "NVARCHAR(255)")
+    private String status = "Đã tham gia";
+
+    @Column(name = "is_delete", nullable = false, columnDefinition = "BOOLEAN DEFAULT 0")
+    private Boolean isDelete=Boolean.FALSE;
 
     @ManyToOne
     @JoinColumn(name = "classroom_id", referencedColumnName = "classroom_id")

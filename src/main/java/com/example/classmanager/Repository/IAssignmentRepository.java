@@ -6,6 +6,7 @@ import com.example.classmanager.dto.dto.AssignmentQDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -26,15 +27,26 @@ public interface IAssignmentRepository extends JpaRepository<Assignment, Long> {
     Page<AssignmentOfTeacher> pageFindAssignmentsByTeacherId(@Param("username") String username, @Param("title") String title, Pageable pageable);
 
     @Query("select a.assignmentId as assignmentId, a.title as title, a.startDate as startDate, " +
-            "a.dueDate as dueDate, a.status as status from Assignment a " +
-            "where a.classroom.classroomId = :classroomId")
-    Page<AssignmentOfClassProjection> pageGetAssignmentOfClass(@Param("classroomId") Long classroomId, Pageable pageable);
+            "a.dueDate as dueDate, sa.status as status, sa.grade as grade from StudentAssignment sa join sa.assignment a " +
+            "where a.classroom.classroomId = :classroomId and sa.student.user.username = :username")
+    Page<AssignmentOfClassProjection> pageGetAssignmentOfClass(@Param("classroomId") Long classroomId, @Param("username") String username,Pageable pageable);
 
-    @Query("select q.questionId as questionId, q.questionText as questionText, q.maxScore as maxScore " +
-            "from Question q join q.assignment a where a.assignmentId = :assignmentId")
-    List<AssignmentQuestionProjection> getAllQuestionInAssignment(@Param("assignmentId") Long assignmentId);
+    @Query("select q.questionId as questionId, q.questionText as questionText, q.maxScore as maxScore, sa.answerText as answerText " +
+            "from Question q join q.assignment a left join StudentAnswer sa on sa.question.questionId = q.questionId " +
+            "where a.assignmentId = :assignmentId and sa.student.user.username = :username")
+    List<AssignmentQuestionProjection> getAllQuestionInAssignment(@Param("assignmentId") Long assignmentId, @Param("username") String username);
 
     @Query("select a.title as title, a.startDate as startDate, a.dueDate as dueDate " +
             "from Assignment a where a.assignmentId = :assignmentId")
     AssignmentProjection getAssignmentByAssignmentId(@Param("assignmentId") Long assignmentId);
+
+    @Modifying
+    @Query("update Assignment a set a.status = 'Hoàn thành' where a.dueDate < current_timestamp")
+    void updateStatusAssignment();
+
+    @Query("select a.assignmentId as assignmentId, a.title as title, a.startDate as startDate, " +
+            "a.dueDate as dueDate, sa.status as status, sa.grade as grade, c.classroomName as classroomName" +
+            " from StudentAssignment sa join sa.assignment a join a.classroom c " +
+            "where sa.student.user.username = :username")
+    Page<AssignmentListProjection> getAssignmentList(@Param("username") String username ,Pageable pageable);
 }

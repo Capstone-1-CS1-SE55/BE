@@ -1,6 +1,8 @@
 package com.example.classmanager.Service.Assignment;
 
 import com.example.classmanager.Model.Assignment;
+import com.example.classmanager.dto.dto.StudentAnswerDto;
+import com.example.classmanager.dto.projection.AssignmentListProjection;
 import com.example.classmanager.dto.projection.AssignmentOfClassProjection;
 import com.example.classmanager.dto.dto.CreateAssignment;
 import com.example.classmanager.dto.dto.QuestionProjectionDTO;
@@ -18,5 +20,8 @@ public interface IAssignmentService {
     Assignment findById(Long assignmentId);
     void updateAssignment(List<QuestionProjectionDTO> assignmentList, Long assignmentId, String username);
     Page<AssignmentOfTeacher> pageFindAssignmentsByTeacherId(String username, String title, Pageable pageable);
-    Page<AssignmentOfClassProjection> pageGetAssignmentOfClass(Long classroomId, Pageable pageable);
+    Page<AssignmentOfClassProjection> pageGetAssignmentOfClass(Long classroomId,String username, Pageable pageable);
+    void submitAssignment(List<StudentAnswerDto> list, String username, Long assignmentId);
+    void updateStatusAssignmentAndStudentAssignment();
+    Page<AssignmentListProjection> getAssignmentList(String username, Pageable pageable);
 }

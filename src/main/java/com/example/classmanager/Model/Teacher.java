@@ -17,15 +17,19 @@ public class Teacher {
     @Column(name = "teacher_id")
     private Long teacherId;
 
+    @Column(nullable = false, columnDefinition = "NVARCHAR(255)")
     private String teacherName;
 
+    @Column(nullable = false, unique = true, columnDefinition = "NVARCHAR(255)")
     private String email;
 
-    @Column(columnDefinition = "DATE")
+    @Column(columnDefinition = "DATE", nullable = false)
     private LocalDate birthday;
 
+    @Column(columnDefinition = "NVARCHAR(10)", nullable = false)
     private String gender;
 
+    @Column(columnDefinition = "NVARCHAR(15)", nullable = false)
     private String phoneNumber;
 
     @OneToOne

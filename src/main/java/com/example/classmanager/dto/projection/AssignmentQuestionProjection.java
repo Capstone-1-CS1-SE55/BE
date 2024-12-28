@@ -5,4 +5,5 @@ public interface AssignmentQuestionProjection {
      Long getQuestionId();
      BigDecimal getMaxScore();
      String getQuestionText();
+     String getAnswerText();
 }

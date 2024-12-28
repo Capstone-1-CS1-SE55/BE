@@ -18,7 +18,7 @@ public interface IQuestionRepository extends JpaRepository<Question, Long> {
     List<QuestionProjection> getAllQuestionsInAssignment(@Param("assignmentId") Long assignmentId, @Param("username") String username);
 
     @Query("select q.questionText as questionText, sa.answerText as answerText, sa.score as score, q.questionId as questionId, s.studentId as studentId, " +
-            "q.assignment.title as title, q.assignment.startDate as startDate, q.assignment.assignmentId as assignmentId from Question q " +
+            "q.assignment.title as title, q.assignment.startDate as startDate, q.assignment.assignmentId as assignmentId, q.maxScore as max from Question q " +
             "join StudentAnswer sa on q.questionId = sa.question.questionId " +
             "join Student s on s.studentId = sa.student.studentId where" +
             " sa.question.assignment.assignmentId = :assignmentId and sa.student.studentId = :studentId " +

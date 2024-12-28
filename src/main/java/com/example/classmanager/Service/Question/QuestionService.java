@@ -1,11 +1,13 @@
 package com.example.classmanager.Service.Question;
 
+import com.example.classmanager.Entity.StudentAnswerId;
 import com.example.classmanager.Model.Question;
+import com.example.classmanager.Model.Student;
+import com.example.classmanager.Model.StudentAnswer;
 import com.example.classmanager.Model.TeacherAnswer;
-import com.example.classmanager.Repository.IAssignmentRepository;
-import com.example.classmanager.Repository.IQuestionRepository;
-import com.example.classmanager.Repository.ITeacherAnswerRepository;
+import com.example.classmanager.Repository.*;
 import com.example.classmanager.dto.dto.AssignmentQDto;
+import com.example.classmanager.dto.dto.StudentAnswerDto;
 import com.example.classmanager.dto.projection.AssignmentProjection;
 import com.example.classmanager.dto.projection.AssignmentQuestionProjection;
 import com.example.classmanager.dto.projection.QuestionProjection;
@@ -29,6 +31,12 @@ public class QuestionService implements IQuestionService{
 
     @Autowired
     private ITeacherAnswerRepository iTeacherAnswerRepository;
+
+    @Autowired
+    private IStudentAnswerRepository iStudentAnswerRepository;
+
+    @Autowired
+    private IStudentRepository iStudentRepository;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -75,8 +83,8 @@ public class QuestionService implements IQuestionService{
 
     @Override
     @PreAuthorize("hasRole('STUDENT')")
-    public AssignmentQDto getAllQuestionInAssignment(Long assignmentId) {
-        List<AssignmentQuestionProjection> list = iAssignmentRepository.getAllQuestionInAssignment(assignmentId);
+    public AssignmentQDto getAllQuestionInAssignment(Long assignmentId, String username) {
+        List<AssignmentQuestionProjection> list = iAssignmentRepository.getAllQuestionInAssignment(assignmentId, username);
         AssignmentProjection assignmentProjection = iAssignmentRepository.getAssignmentByAssignmentId(assignmentId);
         AssignmentQDto assignmentQDto = new AssignmentQDto();
         assignmentQDto.setTitle(assignmentProjection.getTitle());
@@ -84,5 +92,25 @@ public class QuestionService implements IQuestionService{
         assignmentQDto.setStartDate(assignmentProjection.getStartDate());
         assignmentQDto.setListQuestion(list);
         return assignmentQDto;
+    }
+
+    @Override
+    public Question findQuestionById(Long questionId) {
+        return iQuestionRepository.findById(questionId).orElse(null);
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasRole('STUDENT')")
+    public void saveStudentAnswer(List<StudentAnswerDto> list, String username) {
+        Student student = iStudentRepository.findStudentByUsername(username).orElse(null);
+        for (StudentAnswerDto studentAnswerDto : list) {
+            Question question = iQuestionRepository.findById(studentAnswerDto.getId()).orElse(null);
+            StudentAnswer studentAnswer = new StudentAnswer();
+            StudentAnswerId studentAnswerId = new StudentAnswerId(student.getStudentId(), question.getQuestionId());
+            studentAnswer.setAnswerText(studentAnswerDto.getStudentAnswer());
+            studentAnswer.setId(studentAnswerId);
+            iStudentAnswerRepository.save(studentAnswer);
+        }
     }
 }

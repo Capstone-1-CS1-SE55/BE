@@ -2,6 +2,7 @@ package com.example.classmanager.Model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -16,7 +17,7 @@ public class Assignment {
     @Column(name = "assignment_id")
     private Long assignmentId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "NVARCHAR(255)")
     private String title;
 
     @Column(columnDefinition = "TEXT")
@@ -28,14 +29,17 @@ public class Assignment {
     @Column(name = "due_date", columnDefinition = "DATETIME")
     private LocalDateTime dueDate; //hạn nộp
 
-    @Column(name = "created_date")
+    @Column(name = "created_date", nullable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdDate;
 
-    @Column(name = "status", nullable = false, columnDefinition = "VARCHAR(50) DEFAULT 'Đã giao'")
+    @Column(name = "status", nullable = false, columnDefinition = "NVARCHAR(50) DEFAULT 'Đã giao'")
     private String status = "Đã giao";
 
+    @Column(name = "is_delete", nullable = false, columnDefinition = "BOOLEAN DEFAULT 0")
+    private Boolean isDelete=Boolean.FALSE;
+
     @ManyToOne
-    @JoinColumn(name = "classroom_id", referencedColumnName = "classroom_id")
+    @JoinColumn(name = "classroom_id", referencedColumnName = "classroom_id", nullable = false)
     private Classroom classroom;
 
     // Đảm bảo trường createdDate có giá trị là ngày hiện tại khi bản ghi được tạo

@@ -1,6 +1,7 @@
 package com.example.classmanager.dto.projection;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public interface FindAllClassOfStudentProjection {
     Long getStudentId();

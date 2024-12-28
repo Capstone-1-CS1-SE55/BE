@@ -13,7 +13,6 @@ public interface IUserService {
     List<User> getAllUsers();
     User getUserById(Long id);
     UserResponse getMyInfo();
-
     UserResponse getUser(Long id);
     User getUserByName(String userName);
 }

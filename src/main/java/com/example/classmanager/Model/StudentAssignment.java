@@ -24,15 +24,15 @@ public class StudentAssignment {
     @Column(name = "submission_date", columnDefinition = "DATETIME")
     private LocalDateTime submissionDate;
 
-    @Column(precision = 4, scale = 2) // DECIMAL(4, 2)
+    @Column(precision = 4, scale = 2) // DECIMAL(3, 2)
     @DecimalMin(value = "0.0", inclusive = true)
     @DecimalMax(value = "10.0", inclusive = true)
     private BigDecimal grade;
 
-    @Column(name = "status", nullable = false, columnDefinition = "VARCHAR(50) DEFAULT 'Chưa làm'")
+    @Column(name = "status", nullable = false, columnDefinition = "NVARCHAR(50) DEFAULT 'Chưa làm'")
     private String status = "Chưa làm";
 
-    @Column(name = "time_to_work", columnDefinition = "DATETIME")
+    @Column(name = "time_to_work", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime timeToWork;
 
     @ManyToOne
@@ -44,4 +44,9 @@ public class StudentAssignment {
     @MapsId("assignmentId")
     @JoinColumn(name = "assignment_id", referencedColumnName = "assignment_id")
     private Assignment assignment;
+
+    @PrePersist
+    protected void onCreate() {
+        this.timeToWork = LocalDateTime.now();
+    }
 }

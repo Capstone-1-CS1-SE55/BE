@@ -44,11 +44,11 @@ public class ClassroomService implements IClassroomService {
         Classroom savedClassroom = iClassroomRepository.save(classroom);
         for (String email: listEmails) {
             if (!Pattern.matches(EMAIL_REGEX, email)) {
-                return;
+                continue;
             }
             Student student = iStudentRepository.findStudentByEmail(email);
             if (student == null) {
-                return;
+                continue;
             }
             ClassroomStudent classroomStudent = new ClassroomStudent();
             classroomStudent.setStudent(student);

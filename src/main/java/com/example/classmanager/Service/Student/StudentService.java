@@ -19,4 +19,9 @@ public class StudentService implements IStudentService{
     public Student getStudentById(Long id) {
         return iStudentRepository.findById(id).orElse(null);
     }
+
+    @Override
+    public Student findStudentByUsername(String username) {
+        return iStudentRepository.findStudentByUsername(username).orElse(null);
+    }
 }

@@ -23,9 +23,14 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long userId;
 
+    @Column(nullable = false, unique = true, columnDefinition = "NVARCHAR(255)")
     String username;
 
+    @Column(nullable = false, columnDefinition = "NVARCHAR(255)")
     String password;
+
+    @Column(name = "is_delete", nullable = false, columnDefinition = "BOOLEAN DEFAULT 0")
+    private Boolean isDelete = Boolean.FALSE;
 
     @ElementCollection
     Set<String> roles;

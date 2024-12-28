@@ -4,11 +4,10 @@ import com.example.classmanager.Entity.response.ApiResponse;
 import com.example.classmanager.Model.Assignment;
 import com.example.classmanager.Service.Assignment.IAssignmentService;
 import com.example.classmanager.Service.Question.IQuestionService;
+import com.example.classmanager.Service.StudentAnswer.IStudentAnswerService;
 import com.example.classmanager.Service.StudentAssignment.IStudentAssignmentService;
-import com.example.classmanager.dto.dto.AssignmentQDto;
+import com.example.classmanager.dto.dto.*;
 import com.example.classmanager.dto.projection.AssignmentOfClassProjection;
-import com.example.classmanager.dto.dto.CreateAssignment;
-import com.example.classmanager.dto.dto.QuestionProjectionDTO;
 import com.example.classmanager.dto.projection.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -34,6 +33,9 @@ public class AssignmentController {
 
     @Autowired
     private IStudentAssignmentService iStudentAssignmentService;
+
+    @Autowired
+    private IStudentAnswerService iStudentAnswerService;
 
     @GetMapping("/teacher/{teacherId}")
     public ResponseEntity<List<TeacherHomeworkProjection>> findAssignmentsByTeacherId(@PathVariable("teacherId") Long teacherId) {
@@ -142,19 +144,56 @@ public class AssignmentController {
                                                                                         @RequestParam(required = false, defaultValue = "startDate") String sort,
                                                                                         @PageableDefault(page = 0, size = 5
                                                                                         ) Pageable pageable) {
-        Sort sort1 = Sort.by(Sort.Direction.ASC, sort);
+        Sort sort1 = Sort.by(Sort.Direction.DESC, sort);
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
         Pageable pageableWithSort = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort1);
-        Page<AssignmentOfClassProjection> page = iAssignmentService.pageGetAssignmentOfClass(classroomId, pageableWithSort);
+        Page<AssignmentOfClassProjection> page = iAssignmentService.pageGetAssignmentOfClass(classroomId, authentication.getName(), pageableWithSort);
         return new ResponseEntity<>(page, HttpStatus.OK);
     }
 
     @GetMapping("/all-question/{assignmentId}")
     public ResponseEntity<AssignmentQDto> getAllQuestionInAssignment(@PathVariable("assignmentId") Long assignmentId) {
         try {
-            AssignmentQDto assignmentList = iQuestionService.getAllQuestionInAssignment(assignmentId);
+            var authentaction = SecurityContextHolder.getContext().getAuthentication();
+            AssignmentQDto assignmentList = iQuestionService.getAllQuestionInAssignment(assignmentId, authentaction.getName());
             return new ResponseEntity<>(assignmentList, HttpStatus.OK);
         } catch (Exception ignored) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @PostMapping("/submit-assignment/{assignmentId}")
+    public ResponseEntity<ApiResponse<String>> submitAssignment(@RequestBody List<StudentAnswerDto> list,
+                                                                @PathVariable("assignmentId") Long assignmentId) {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        iAssignmentService.submitAssignment(list, authentication.getName(), assignmentId);
+        return new ResponseEntity<>(ApiResponse.<String>builder()
+                .message("Submit successfully")
+                .build(), HttpStatus.OK);
+    }
+    @PatchMapping("/update-status")
+    public ResponseEntity<ApiResponse<String>> updateStatusAssignmentAndStudentAssignment() {
+        iAssignmentService.updateStatusAssignmentAndStudentAssignment();
+        return new ResponseEntity<>(ApiResponse.<String>builder()
+                .build(), HttpStatus.OK);
+    }
+    @GetMapping("/assignment-list")
+    public ResponseEntity<Page<AssignmentListProjection>> pageAssignmentOfStudent(@PageableDefault(page = 0, size = 5) Pageable pageable,
+                                                                                  @RequestParam(required = false, defaultValue = "startDate") String sort) {
+        Sort sort1 = Sort.by(Sort.Direction.DESC, sort);
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        Pageable pageableWithSort = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort1);
+        Page<AssignmentListProjection> page = iAssignmentService.getAssignmentList(authentication.getName(), pageableWithSort);
+        return new ResponseEntity<>(page, HttpStatus.OK);
+    }
+
+    @PatchMapping("/test-scoring/{assignmentId}/{studentId}")
+    public ResponseEntity<ApiResponse<String>> testScoring(@PathVariable("assignmentId") Long assignmentId,
+                                                           @PathVariable("studentId") Long studentId,
+                                                           @RequestBody List<StudentAnswerScoreDto> list) {
+        iStudentAnswerService.testScoring(list, assignmentId, studentId);
+        return new ResponseEntity<>(ApiResponse.<String>builder()
+                .result("grading successfully")
+                .build(), HttpStatus.CREATED);
     }
 }

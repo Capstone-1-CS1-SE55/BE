@@ -17,21 +17,25 @@ public class Classroom {
     @Column(name = "classroom_id")
     private Long classroomId;
 
+    @Column(nullable = false, columnDefinition = "NVARCHAR(255)")
     private String classroomName;
 
-    @Column(name = "created_date")
-    private LocalDateTime createdDate;
+    @Column(name = "created_date", nullable = false, columnDefinition = "DATE DEFAULT CURRENT_TIMESTAMP")
+    private LocalDate createdDate;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "BIGINT DEFAULT 0")
     private Integer quantity = 0;
 
+    @Column(name = "is_delete", nullable = false, columnDefinition = "BOOLEAN DEFAULT 0")
+    private Boolean isDelete = Boolean.FALSE;
+
     @ManyToOne
-    @JoinColumn(name = "teacher_id", referencedColumnName = "teacher_id")
+    @JoinColumn(name = "teacher_id", referencedColumnName = "teacher_id", nullable = false)
     private Teacher teacher;
 
     @PrePersist
     protected void onCreate() {
-        this.createdDate = LocalDateTime.now();
+        this.createdDate = LocalDate.now();
     }
 
 //    @OneToMany(mappedBy = "classroom", cascade = CascadeType.ALL)

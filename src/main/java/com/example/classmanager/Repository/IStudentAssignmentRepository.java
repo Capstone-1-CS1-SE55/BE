@@ -1,12 +1,17 @@
 package com.example.classmanager.Repository;
 
+import com.example.classmanager.Model.Assignment;
+import com.example.classmanager.Model.Student;
 import com.example.classmanager.Model.StudentAssignment;
 import com.example.classmanager.dto.projection.StudentAssignmentProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import java.util.Optional;
 
 public interface IStudentAssignmentRepository extends JpaRepository<StudentAssignment, Long> {
     @Query("select sa.student.studentId as studentId, sa.assignment.assignmentId as assignmentId, " +
@@ -16,4 +21,13 @@ public interface IStudentAssignmentRepository extends JpaRepository<StudentAssig
             "sa.assignment.assignmentId = :assignmentId and sa.student.studentName like :studentName and " +
             "sa.assignment.classroom.teacher.user.username = :username")
     Page<StudentAssignmentProjection> pageGetAllStudentAssignment(@Param("assignmentId") Long assignmentId,@Param("studentName") String studentName ,@Param("username") String username,Pageable pageable);
+
+    @Query("select sa from StudentAssignment sa where sa.student.studentId = :studentId " +
+            "and sa.assignment.assignmentId = :assignmentId")
+    Optional<StudentAssignment> findByStudentIdAndAssignmentId(@Param("studentId") Long studentId, @Param("assignmentId") Long assignmentId);
+
+    @Modifying
+    @Query("update StudentAssignment sa set sa.status = 'Đã nộp' where sa.assignment.assignmentId in " +
+            "(select a.assignmentId from Assignment a where a.dueDate < current_timestamp )")
+    void updateStatusStudentAssignment();
 }

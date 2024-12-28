@@ -89,7 +89,7 @@ public class DatabaseInitializer {
                     "   END;\n" +
                     "   START TRANSACTION;\n" +
                     "   DELETE FROM teacher_answer WHERE question_id = questionId;\n" +
-//                    "   DELETE FROM student_answer WHERE question_id = questionId;\n" +
+                    "   DELETE FROM student_answer WHERE question_id = questionId;\n" +
                     "   DELETE FROM question WHERE question_id = questionId;\n" +
                     "   IF exitHandler = 0 THEN\n" +
                     "       COMMIT;\n" +

@@ -121,14 +121,14 @@ public class ClassroomController {
         return new ResponseEntity<>(classroomList, HttpStatus.OK);
     }
 
-    @GetMapping("/page-get-all-classroom-of-teacher/{username}")
+    @GetMapping("/page-get-all-classroom-of-teacher")
     public ResponseEntity<Page<ClassroomProjection>> findAll(@PageableDefault(page = 0, size = 5) Pageable pageable,
-                                                  @PathVariable("username") String username,
                                                   @RequestParam(required = false, defaultValue = "") String classroomName,
                                                   @RequestParam(required = false, defaultValue = "classroomId") String sort) {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
         Sort sort1 = Sort.by(Sort.Direction.ASC, sort);
         Pageable pageableWithSort = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort1);
-        Page<ClassroomProjection> list = iClassroomService.PagegetClassroomsByTeacherId(username, "%" + classroomName + "%", pageableWithSort);
+        Page<ClassroomProjection> list = iClassroomService.PagegetClassroomsByTeacherId(authentication.getName(), "%" + classroomName + "%", pageableWithSort);
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 

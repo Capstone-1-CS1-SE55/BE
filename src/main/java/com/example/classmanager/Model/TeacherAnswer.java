@@ -9,11 +9,10 @@ import lombok.*;
 @Entity
 public class TeacherAnswer {
     @Id
-    @Column(name = "question_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "question_id")   
     private Long questionId;
 
-    @Column(name = "correct_answer", nullable = false)
+    @Column(name = "correct_answer", nullable = false, columnDefinition = "TEXT")
     private String correctAnswer;
 
     @OneToOne
