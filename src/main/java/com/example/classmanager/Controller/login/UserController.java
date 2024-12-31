@@ -6,7 +6,9 @@ import com.example.classmanager.Model.Teacher;
 import com.example.classmanager.Model.login.User;
 import com.example.classmanager.Service.Teacher.ITeacherService;
 import com.example.classmanager.Service.login.IUserService;
+import com.example.classmanager.dto.dto.AccountDto;
 import com.example.classmanager.dto.dto.UserCreateDto;
+import com.example.classmanager.dto.projection.UserProjection;
 import com.example.classmanager.exception.AppException;
 import com.example.classmanager.exception.ErrorCode;
 import lombok.AccessLevel;
@@ -14,6 +16,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -36,9 +43,8 @@ public class UserController {
 
     @Autowired
     ITeacherService iTeacherService;
-
     @PostMapping("/create")
-    public ResponseEntity<ApiResponse<String>> createNewUser(@RequestBody UserCreateDto request) {
+    public ResponseEntity<ApiResponse<String>> createNewUser(@RequestBody AccountDto request) {
         if (!userService.existUserByName(request.getUsername())) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -51,7 +57,6 @@ public class UserController {
                 .message("created successfully")
                 .build(), HttpStatus.CREATED);
     }
-
     @GetMapping("/get-all")
     public ResponseEntity<List<User>> getAllUsers() {
 
@@ -95,5 +100,35 @@ public class UserController {
         }
         return new ResponseEntity<>(teacherLogin, HttpStatus.OK);
     }
+    @GetMapping("/all-user")
+    public ResponseEntity<Page<UserProjection>> pageGetAllUser(@RequestParam(required = false, defaultValue = "") String username,
+                                                               @PageableDefault(size = 5, page = 0) Pageable pageable,
+                                                               @RequestParam(required = false, defaultValue = "username") String sort) {
+        Sort sort1 = Sort.by(Sort.Direction.ASC, sort);
+        Pageable pageableWithSort = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort1);
+        Page<UserProjection> userProjections = userService.pageGetAllUser(username, "ADMIN", pageableWithSort);
+        return new ResponseEntity<>(userProjections, HttpStatus.OK);
+    }
+    @DeleteMapping("/delete-user/{userId}")
+    public ResponseEntity<ApiResponse<String>> deleteUser(@PathVariable Long userId) {
+        try {
+            userService.deleteUser(userId);
+            return new ResponseEntity<>(ApiResponse.<String>builder()
+                    .message("Delete Success")
+                    .build(), HttpStatus.OK);
+        }catch (Exception e) {
+            return new ResponseEntity<>(ApiResponse.<String>builder()
+                    .message("Delete Failed")
+                    .build(), HttpStatus.BAD_REQUEST);
+        }
+    }
 
+    @GetMapping("/check-username/{username}")
+    public ResponseEntity<UserProjection> checkUsername(@PathVariable String username) {
+        UserProjection userProjection = userService.checkUsername(username);
+        if (userProjection == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(userProjection, HttpStatus.OK);
+    }
 }

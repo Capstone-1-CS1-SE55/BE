@@ -47,13 +47,13 @@ public class AssignmentController {
     }
 
     @GetMapping("/page-get-all-assignment-of-teacher")
-    public ResponseEntity<Page<AssignmentOfTeacher>> findAll(@PageableDefault(page = 0, size = 5) Pageable pageable,
+    public ResponseEntity<Page<AssignmentOfTeacherDTO>> findAll(@PageableDefault(page = 0, size = 5) Pageable pageable,
                                                              @RequestParam(required = false, defaultValue = "") String title,
                                                              @RequestParam(required = false, defaultValue = "assignmentId") String sort) {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         Sort sort1 = Sort.by(Sort.Direction.ASC, sort);
         Pageable pageableWithSort = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort1);
-        Page<AssignmentOfTeacher> list = iAssignmentService.pageFindAssignmentsByTeacherId(authentication.getName(), "%" + title + "%", pageableWithSort);
+        Page<AssignmentOfTeacherDTO> list = iAssignmentService.pageFindAssignmentsByTeacherId(authentication.getName(), "%" + title + "%", pageableWithSort);
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
@@ -96,7 +96,8 @@ public class AssignmentController {
                     .message("assignment does not exist")
                     .build(), HttpStatus.BAD_REQUEST);
         }
-        iAssignmentService.createNewAssignment(createAssignment);
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        iAssignmentService.createNewAssignment(createAssignment, authentication.getName());
         return new ResponseEntity<>(ApiResponse.<String>builder()
                 .message("created successfully")
                 .build(), HttpStatus.CREATED);
@@ -118,9 +119,10 @@ public class AssignmentController {
 
     @PostMapping("/update/{assignmentId}")
     public ResponseEntity<ApiResponse<String>> updateAssignment(@RequestBody List<QuestionProjectionDTO> assignmentList,
+                                                                @RequestParam(required = false) List<Long> classroomIds,
                                                                 @PathVariable("assignmentId") Long assignmentId) {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
-        iAssignmentService.updateAssignment(assignmentList, assignmentId, authentication.getName());
+        iAssignmentService.updateAssignment(assignmentList, assignmentId, authentication.getName(), classroomIds);
         return new ResponseEntity<>(ApiResponse.<String>builder()
                 .message("Updated successfully")
                 .build(), HttpStatus.OK);
@@ -129,8 +131,7 @@ public class AssignmentController {
     @GetMapping("/page-student-assignment/{assignmentId}")
     public ResponseEntity<Page<StudentAssignmentProjection>> pageGetAllStudentAssignment(@PathVariable("assignmentId") Long assignmentId,
                                                                                          @PageableDefault(page = 0, size = 5) Pageable pageable,
-                                                                                         @RequestParam(required = false, defaultValue = "studentName") String sort,
-                                                                                         @RequestParam(required = false, defaultValue = "") String studentName)
+                                                                                         @RequestParam(required = false, defaultValue = "studentName") String sort, @RequestParam(required = false, defaultValue = "") String studentName)
     {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         Sort sort1 = Sort.by(Sort.Direction.ASC, sort);

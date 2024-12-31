@@ -4,18 +4,19 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class QuestionProjectionDTO {
+public class AssignmentOfTeacherDTO {
     private Long assignmentId;
-    private Long questionId;
-    private String questionText;
-    private String correctAnswer;
-    private BigDecimal maxScore;
+    private Long teacherId;
+    private String username;
+    private String teacherName;
+    private String classroomName;
     private String title;
+    private LocalDateTime createdDate;
     private LocalDateTime startDate;
     private LocalDateTime dueDate;
 }

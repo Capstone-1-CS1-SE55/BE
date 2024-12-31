@@ -1,6 +1,7 @@
 package com.example.classmanager.Repository;
 
 import com.example.classmanager.Model.Classroom;
+import com.example.classmanager.dto.projection.ClassroomNameProjection;
 import com.example.classmanager.dto.projection.ClassroomProjection;
 import com.example.classmanager.dto.projection.ClassroomStudentProjection;
 import com.example.classmanager.dto.projection.FindAllStudentInClassroomProjection;
@@ -13,6 +14,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IClassroomRepository extends JpaRepository<Classroom, Long> {
     @Query("SELECT CASE WHEN COUNT(c) > 0 THEN true ELSE false END " +
@@ -54,4 +56,7 @@ public interface IClassroomRepository extends JpaRepository<Classroom, Long> {
             "on c.classroomId = cs.classroom.classroomId " +
             "join Student s on cs.student.studentId = s.studentId where c.classroomId = :id and s.studentName like :studentName")
     Page<FindAllStudentInClassroomProjection> PageGetStudentInClassroomByStudentName(@Param("id") Long id, @Param("studentName") String studentName, Pageable pageable);
+
+    @Query("select c.classroomName as classroomName from Classroom c where c.classroomId = :classroomId")
+    Optional<ClassroomNameProjection> findClassroomName(@Param("classroomId") Long classroomId);
 }

@@ -13,4 +13,5 @@ public interface StudentAnswerProjection {
     BigDecimal getMax();
     String getTitle();
     LocalDateTime getStartDate();
+    LocalDateTime getDueDate();
 }

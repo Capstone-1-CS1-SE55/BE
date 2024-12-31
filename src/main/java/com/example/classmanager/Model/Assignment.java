@@ -39,8 +39,12 @@ public class Assignment {
     private Boolean isDelete=Boolean.FALSE;
 
     @ManyToOne
-    @JoinColumn(name = "classroom_id", referencedColumnName = "classroom_id", nullable = false)
+    @JoinColumn(name = "classroom_id", referencedColumnName = "classroom_id", nullable = true)
     private Classroom classroom;
+
+    @ManyToOne
+    @JoinColumn(name = "teacher_id", referencedColumnName = "teacher_id", nullable = false)
+    private Teacher teacher;
 
     // Đảm bảo trường createdDate có giá trị là ngày hiện tại khi bản ghi được tạo
     @PrePersist

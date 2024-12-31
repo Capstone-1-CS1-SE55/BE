@@ -17,7 +17,7 @@ public class Classroom {
     @Column(name = "classroom_id")
     private Long classroomId;
 
-    @Column(nullable = false, columnDefinition = "NVARCHAR(255)")
+    @Column(columnDefinition = "NVARCHAR(255)")
     private String classroomName;
 
     @Column(name = "created_date", nullable = false, columnDefinition = "DATE DEFAULT CURRENT_TIMESTAMP")

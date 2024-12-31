@@ -11,4 +11,6 @@ public interface QuestionProjection {
     BigDecimal getMaxScore();
     String getTitle();
     LocalDateTime getStartDate();
+    LocalDateTime getDueDate();
+    Long getClassId();
 }
