@@ -120,6 +120,7 @@ public class AssignmentService implements IAssignmentService {
     }
 
     @Override
+    @Transactional
     @PreAuthorize("hasAnyRole('TEACHER','ADMIN')")
     public void deleteAssignmentWithRelations(Long assignmentId) {
         try {
